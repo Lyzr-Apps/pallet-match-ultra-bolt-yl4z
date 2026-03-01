@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { callAIAgent } from '@/lib/aiAgent'
-import { FiTruck, FiEdit, FiPackage, FiDollarSign, FiClock, FiMapPin, FiPlus, FiCheck } from 'react-icons/fi'
+import { FiTruck, FiEdit, FiPackage, FiDollarSign, FiClock, FiMapPin, FiPlus, FiCheck, FiVideo, FiUpload, FiMail, FiPhone, FiX, FiStar, FiAlertCircle } from 'react-icons/fi'
 import { Loader2 } from 'lucide-react'
 
 const ASSISTANT_AGENT_ID = '69a43a1b1ecf43e3e54a52be'
@@ -37,11 +37,15 @@ const sampleRFQs = [
 ]
 
 export default function SupplierDashboardSection({ showSample, activeAgentId, setActiveAgentId }: SupplierDashboardProps) {
-  const [profile, setProfile] = useState({ name: '', location: '', capabilities: '', palletTypes: '', heatTreatment: false, delivery: false, minOrder: '' })
+  const [profile, setProfile] = useState({ name: '', location: '', capabilities: '', palletTypes: '', heatTreatment: false, delivery: false, minOrder: '', customCrates: false })
   const [quoteForm, setQuoteForm] = useState({ rfqId: '', price: '', leadTime: '', deliveryFee: '', notes: '' })
   const [assistantResponse, setAssistantResponse] = useState<{ content?: string; key_points?: string[]; suggested_actions?: string[]; context_notes?: string } | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [subscriptionTier, setSubscriptionTier] = useState<'free' | 'paid'>('free')
+  const [capabilityStatement, setCapabilityStatement] = useState('')
+  const [videoFile, setVideoFile] = useState<File | null>(null)
+  const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null)
 
   const handleDraftQuote = async (rfq: typeof sampleRFQs[0]) => {
     setLoading(true)
@@ -86,9 +90,40 @@ Our capabilities: We supply ${profile.palletTypes || '48x40 GMA, 42x42, 48x48'} 
         <p className="text-sm text-muted-foreground mt-1">Manage your profile, listings, and respond to RFQs</p>
       </div>
 
+      <div className="mb-6">
+        <Card className={`border-border/40 ${subscriptionTier === 'paid' ? 'bg-accent/5 border-accent/40' : 'bg-card'}`}>
+          <CardContent className="pt-4 pb-3">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-3">
+                {subscriptionTier === 'paid' ? (
+                  <Badge className="bg-accent text-accent-foreground text-xs"><FiVideo className="w-3 h-3 mr-1" /> Pro Plan - $49/mo</Badge>
+                ) : (
+                  <Badge variant="outline" className="text-xs">Free Plan</Badge>
+                )}
+                <span className="text-xs text-muted-foreground">
+                  {subscriptionTier === 'paid' ? 'Video capability statement enabled' : 'Text capability statement only'}
+                </span>
+              </div>
+              <div className="flex gap-2">
+                {subscriptionTier === 'free' ? (
+                  <Button size="sm" className="text-xs bg-accent text-accent-foreground hover:bg-accent/90" onClick={() => setSubscriptionTier('paid')}>
+                    <FiStar className="w-3 h-3 mr-1" /> Upgrade to Pro - $49/mo
+                  </Button>
+                ) : (
+                  <Button variant="outline" size="sm" className="text-xs" onClick={() => setSubscriptionTier('free')}>
+                    Switch to Free
+                  </Button>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       <Tabs defaultValue="profile" className="space-y-4">
         <TabsList className="bg-muted/50">
           <TabsTrigger value="profile" className="text-xs">Profile</TabsTrigger>
+          <TabsTrigger value="capability" className="text-xs">Capability Statement</TabsTrigger>
           <TabsTrigger value="listings" className="text-xs">My Listings</TabsTrigger>
           <TabsTrigger value="rfqs" className="text-xs">Open RFQs</TabsTrigger>
           <TabsTrigger value="quote" className="text-xs">Submit Quote</TabsTrigger>
@@ -120,7 +155,7 @@ Our capabilities: We supply ${profile.palletTypes || '48x40 GMA, 42x42, 48x48'} 
                 <Label className="text-xs font-medium">Pallet Types Offered</Label>
                 <Input placeholder="e.g. 48x40 GMA, 42x42, Custom" className="mt-1 bg-background text-sm" value={profile.palletTypes} onChange={(e) => setProfile((prev) => ({ ...prev, palletTypes: e.target.value }))} />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                   <Label className="text-xs font-medium">Heat Treatment</Label>
                   <Switch checked={profile.heatTreatment} onCheckedChange={(v) => setProfile((prev) => ({ ...prev, heatTreatment: v }))} />
@@ -128,6 +163,10 @@ Our capabilities: We supply ${profile.palletTypes || '48x40 GMA, 42x42, 48x48'} 
                 <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                   <Label className="text-xs font-medium">Delivery Available</Label>
                   <Switch checked={profile.delivery} onCheckedChange={(v) => setProfile((prev) => ({ ...prev, delivery: v }))} />
+                </div>
+                <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                  <Label className="text-xs font-medium">Custom Crates & Pallets</Label>
+                  <Switch checked={profile.customCrates} onCheckedChange={(v) => setProfile((prev) => ({ ...prev, customCrates: v }))} />
                 </div>
                 <div>
                   <Label className="text-xs font-medium">Minimum Order</Label>
@@ -139,6 +178,169 @@ Our capabilities: We supply ${profile.palletTypes || '48x40 GMA, 42x42, 48x48'} 
               </Button>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="capability">
+          <div className="space-y-4">
+            <Card className="border-border/40 bg-card">
+              <CardHeader className="pb-3">
+                <CardTitle className="font-serif text-lg flex items-center gap-2">
+                  <FiEdit className="w-4 h-4 text-accent" /> Capability Statement
+                </CardTitle>
+                <p className="text-xs text-muted-foreground">Tell buyers who you are, what you do, where you are located, and whether you can build custom crates and pallets.</p>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label className="text-xs font-medium">Written Capability Statement</Label>
+                  <Textarea
+                    placeholder="Describe your company: Who are you? What do you specialize in? Where are you located? Do you build custom crates and pallets? What sets you apart from competitors? Include certifications, years in business, service areas, and any specializations..."
+                    className="mt-1 bg-background text-sm"
+                    rows={6}
+                    value={capabilityStatement}
+                    onChange={(e) => setCapabilityStatement(e.target.value)}
+                  />
+                  <p className="text-[11px] text-muted-foreground mt-1">Available on all plans. This text appears on your public supplier profile.</p>
+                </div>
+                <Button className="font-medium">
+                  <FiCheck className="w-4 h-4 mr-1" /> Save Statement
+                </Button>
+              </CardContent>
+            </Card>
+
+            {subscriptionTier === 'paid' ? (
+              <Card className="border-accent/40 bg-accent/5">
+                <CardHeader className="pb-3">
+                  <CardTitle className="font-serif text-lg flex items-center gap-2">
+                    <FiVideo className="w-4 h-4 text-accent" /> Video Capability Statement
+                    <Badge className="text-[10px] bg-accent text-accent-foreground ml-2">Pro</Badge>
+                  </CardTitle>
+                  <p className="text-xs text-muted-foreground">Upload a 5-minute video showcasing your business, capabilities, location, and custom crate/pallet services.</p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {videoPreviewUrl ? (
+                    <div className="space-y-3">
+                      <div className="relative rounded-lg overflow-hidden bg-black aspect-video">
+                        <video
+                          src={videoPreviewUrl}
+                          controls
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <FiVideo className="w-3.5 h-3.5 text-accent" />
+                          <span className="text-xs font-medium">{videoFile?.name}</span>
+                          <span className="text-[10px] text-muted-foreground">
+                            ({videoFile ? (videoFile.size / (1024 * 1024)).toFixed(1) : 0} MB)
+                          </span>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-xs h-7 text-destructive hover:text-destructive"
+                          onClick={() => { setVideoFile(null); setVideoPreviewUrl(null) }}
+                        >
+                          <FiX className="w-3 h-3 mr-1" /> Remove
+                        </Button>
+                      </div>
+                      <Button className="font-medium">
+                        <FiUpload className="w-4 h-4 mr-1" /> Upload Video
+                      </Button>
+                    </div>
+                  ) : (
+                    <div>
+                      <label
+                        htmlFor="video-upload"
+                        className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-accent/40 rounded-lg cursor-pointer hover:border-accent/60 hover:bg-accent/5 transition-colors"
+                      >
+                        <FiUpload className="w-8 h-8 text-accent/60 mb-3" />
+                        <p className="text-sm font-medium text-foreground">Click to upload your video</p>
+                        <p className="text-xs text-muted-foreground mt-1">MP4, MOV, or WebM -- max 5 minutes, 500 MB</p>
+                      </label>
+                      <input
+                        id="video-upload"
+                        type="file"
+                        accept="video/mp4,video/quicktime,video/webm"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0]
+                          if (file) {
+                            setVideoFile(file)
+                            setVideoPreviewUrl(URL.createObjectURL(file))
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  <Separator />
+
+                  <div className="bg-muted/30 rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <FiVideo className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-xs font-semibold text-foreground mb-1">Need help producing your video?</p>
+                        <p className="text-xs text-muted-foreground mb-2" style={{ lineHeight: '1.65' }}>
+                          We can assist you in creating a professional 5-minute capability video. Your video can cover who you are, what you do, where you are located, and whether you build custom crates and pallets.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <div className="flex items-center gap-1.5 text-xs">
+                            <FiMail className="w-3 h-3 text-primary" />
+                            <a href="mailto:bomar3620@gmail.com" className="text-primary font-medium hover:underline">bomar3620@gmail.com</a>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-xs">
+                            <FiPhone className="w-3 h-3 text-primary" />
+                            <span className="text-foreground font-medium">443-531-2612</span>
+                            <span className="text-muted-foreground">(text &quot;video wanted&quot;)</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="border-border/40 bg-card">
+                <CardContent className="py-8">
+                  <div className="text-center max-w-md mx-auto">
+                    <div className="w-14 h-14 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-4">
+                      <FiVideo className="w-7 h-7 text-muted-foreground/50" />
+                    </div>
+                    <h3 className="font-serif text-lg font-semibold mb-2">Video Capability Statement</h3>
+                    <p className="text-xs text-muted-foreground mb-4" style={{ lineHeight: '1.65' }}>
+                      Upgrade to Pro ($49/mo) to upload a 5-minute video showcasing who you are, what you do, your location, and your custom crate and pallet capabilities. Video profiles get significantly more buyer engagement.
+                    </p>
+                    <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-medium" onClick={() => setSubscriptionTier('paid')}>
+                      <FiStar className="w-4 h-4 mr-1" /> Upgrade to Pro - $49/mo
+                    </Button>
+
+                    <Separator className="my-6" />
+
+                    <div className="bg-muted/30 rounded-lg p-4 text-left">
+                      <div className="flex items-start gap-3">
+                        <FiAlertCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-xs font-semibold text-foreground mb-1">Want a video but need help?</p>
+                          <p className="text-xs text-muted-foreground mb-2">We can help you produce a professional capability statement video. Contact us:</p>
+                          <div className="flex flex-col gap-1.5">
+                            <div className="flex items-center gap-1.5 text-xs">
+                              <FiMail className="w-3 h-3 text-primary" />
+                              <a href="mailto:bomar3620@gmail.com" className="text-primary font-medium hover:underline">bomar3620@gmail.com</a>
+                            </div>
+                            <div className="flex items-center gap-1.5 text-xs">
+                              <FiPhone className="w-3 h-3 text-primary" />
+                              <span className="text-foreground font-medium">443-531-2612</span>
+                              <span className="text-muted-foreground">(text &quot;video wanted&quot;)</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </TabsContent>
 
         <TabsContent value="listings">

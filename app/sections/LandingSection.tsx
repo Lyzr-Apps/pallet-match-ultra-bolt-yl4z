@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { FiPackage, FiTruck, FiMapPin, FiChevronRight, FiStar, FiShield } from 'react-icons/fi'
+import { FiPackage, FiTruck, FiMapPin, FiChevronRight, FiStar, FiShield, FiCheck, FiX, FiVideo, FiMail, FiPhone } from 'react-icons/fi'
 
 type PageView = 'landing' | 'buyer' | 'supplier' | 'hunter' | 'directory' | 'messaging' | 'admin'
 
@@ -21,9 +21,11 @@ const sampleStats = {
 }
 
 const sampleSuppliers = [
-  { name: 'Pacific Pallet Co.', location: 'Portland, OR', rating: 4.8, types: ['48x40 GMA', '42x42'] },
-  { name: 'Heartland Wood Products', location: 'Kansas City, MO', rating: 4.6, types: ['48x40 GMA', '48x48'] },
-  { name: 'SouthEast Pallets', location: 'Atlanta, GA', rating: 4.9, types: ['48x40 GMA', 'Custom'] },
+  { name: 'Pacific Pallet Co.', location: 'Portland, OR', rating: 4.8, types: ['48x40 GMA', '42x42'], tier: 'paid' as const, customCrates: true },
+  { name: 'Heartland Wood Products', location: 'Kansas City, MO', rating: 4.6, types: ['48x40 GMA', '48x48'], tier: 'paid' as const, customCrates: true },
+  { name: 'SouthEast Pallets', location: 'Atlanta, GA', rating: 4.9, types: ['48x40 GMA', 'Custom'], tier: 'free' as const, customCrates: false },
+  { name: 'Bay Area Pallet Recyclers', location: 'Oakland, CA', rating: 4.7, types: ['48x40 GMA', '42x42', '48x48'], tier: 'paid' as const, customCrates: true },
+  { name: 'Golden State Lumber & Pallet', location: 'Sacramento, CA', rating: 4.5, types: ['48x40 GMA', 'Custom'], tier: 'free' as const, customCrates: false },
 ]
 
 export default function LandingSection({ setCurrentPage, showSample }: LandingSectionProps) {
@@ -137,7 +139,7 @@ export default function LandingSection({ setCurrentPage, showSample }: LandingSe
           <div className="mb-8">
             <h2 className="font-serif text-2xl font-bold text-foreground mb-2">Featured Suppliers</h2>
             <p className="text-sm text-muted-foreground mb-6">Top-rated suppliers in the PalletMatch network</p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {sampleSuppliers.map((supplier) => (
                 <Card key={supplier.name} className="border-border/40 bg-card hover:shadow-md transition-shadow">
                   <CardContent className="pt-5 pb-4">
@@ -148,14 +150,26 @@ export default function LandingSection({ setCurrentPage, showSample }: LandingSe
                         <span className="text-xs font-medium">{supplier.rating}</span>
                       </div>
                     </div>
-                    <p className="text-xs text-muted-foreground mb-3">{supplier.location}</p>
-                    <div className="flex flex-wrap gap-1">
+                    <p className="text-xs text-muted-foreground mb-2">{supplier.location}</p>
+                    <div className="flex flex-wrap gap-1 mb-2">
                       {supplier.types.map((t) => (
                         <Badge key={t} variant="secondary" className="text-[10px]">{t}</Badge>
                       ))}
                       <Badge variant="outline" className="text-[10px] border-primary/30 text-primary">
                         <FiShield className="w-2.5 h-2.5 mr-0.5" /> Verified
                       </Badge>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {supplier.tier === 'paid' ? (
+                        <Badge className="text-[10px] bg-accent text-accent-foreground">
+                          <FiVideo className="w-2.5 h-2.5 mr-0.5" /> Pro
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="text-[10px]">Free</Badge>
+                      )}
+                      {supplier.customCrates && (
+                        <Badge variant="outline" className="text-[10px] border-accent/40 text-accent">Custom Crates</Badge>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -164,6 +178,84 @@ export default function LandingSection({ setCurrentPage, showSample }: LandingSe
           </div>
         </>
       )}
+
+      <div className="mb-12">
+        <h2 className="font-serif text-2xl font-bold text-foreground mb-2 text-center">Supplier Subscription Plans</h2>
+        <p className="text-sm text-muted-foreground text-center mb-8">Choose the plan that fits your business</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <Card className="border-border/40 bg-card">
+            <CardHeader className="pb-2">
+              <Badge variant="outline" className="w-fit text-xs mb-2">Free Tier</Badge>
+              <CardTitle className="font-serif text-2xl">Starter</CardTitle>
+              <p className="font-serif text-3xl font-bold text-foreground mt-1">$0<span className="text-sm font-normal text-muted-foreground">/month</span></p>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-muted-foreground mb-4">Get listed on PalletMatch and start receiving RFQs from qualified buyers.</p>
+              <ul className="space-y-2.5">
+                <li className="flex items-start gap-2 text-xs"><FiCheck className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" /> Basic company profile listing</li>
+                <li className="flex items-start gap-2 text-xs"><FiCheck className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" /> Written capability statement (text only)</li>
+                <li className="flex items-start gap-2 text-xs"><FiCheck className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" /> Receive matched RFQs</li>
+                <li className="flex items-start gap-2 text-xs"><FiCheck className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" /> Submit quotes to buyers</li>
+                <li className="flex items-start gap-2 text-xs"><FiCheck className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" /> In-app messaging</li>
+                <li className="flex items-start gap-2 text-xs text-muted-foreground"><FiX className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" /> No video capability statement</li>
+                <li className="flex items-start gap-2 text-xs text-muted-foreground"><FiX className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" /> No priority placement in directory</li>
+              </ul>
+              <Button variant="outline" className="w-full mt-6 font-medium" onClick={() => setCurrentPage('supplier')}>
+                Get Started Free
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-accent/60 bg-card relative overflow-hidden">
+            <div className="absolute top-0 right-0 bg-accent text-accent-foreground text-[10px] font-semibold px-3 py-1 rounded-bl-lg">RECOMMENDED</div>
+            <CardHeader className="pb-2">
+              <Badge className="w-fit text-xs mb-2 bg-accent text-accent-foreground">Pro Tier</Badge>
+              <CardTitle className="font-serif text-2xl">Professional</CardTitle>
+              <p className="font-serif text-3xl font-bold text-foreground mt-1">$49<span className="text-sm font-normal text-muted-foreground">/month</span></p>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-muted-foreground mb-4">Stand out with a video capability statement and get priority visibility with buyers.</p>
+              <ul className="space-y-2.5">
+                <li className="flex items-start gap-2 text-xs"><FiCheck className="w-3.5 h-3.5 text-accent mt-0.5 flex-shrink-0" /> Everything in Free tier</li>
+                <li className="flex items-start gap-2 text-xs font-medium"><FiVideo className="w-3.5 h-3.5 text-accent mt-0.5 flex-shrink-0" /> 5-minute video capability statement upload</li>
+                <li className="flex items-start gap-2 text-xs"><FiCheck className="w-3.5 h-3.5 text-accent mt-0.5 flex-shrink-0" /> Showcase who you are, what you do, your location</li>
+                <li className="flex items-start gap-2 text-xs"><FiCheck className="w-3.5 h-3.5 text-accent mt-0.5 flex-shrink-0" /> Highlight custom crate and pallet capabilities</li>
+                <li className="flex items-start gap-2 text-xs"><FiCheck className="w-3.5 h-3.5 text-accent mt-0.5 flex-shrink-0" /> Priority placement in supplier directory</li>
+                <li className="flex items-start gap-2 text-xs"><FiCheck className="w-3.5 h-3.5 text-accent mt-0.5 flex-shrink-0" /> AI-assisted quote drafting</li>
+                <li className="flex items-start gap-2 text-xs"><FiCheck className="w-3.5 h-3.5 text-accent mt-0.5 flex-shrink-0" /> Pro badge on profile</li>
+              </ul>
+              <Button className="w-full mt-6 font-medium bg-accent text-accent-foreground hover:bg-accent/90" onClick={() => setCurrentPage('supplier')}>
+                Upgrade to Pro
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card className="border-border/40 bg-muted/30 mt-6 max-w-4xl mx-auto">
+          <CardContent className="py-5">
+            <div className="flex items-start gap-3">
+              <FiVideo className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-sm font-semibold text-foreground mb-1">Need help creating your video capability statement?</p>
+                <p className="text-xs text-muted-foreground mb-3" style={{ lineHeight: '1.65' }}>
+                  We can assist you in producing a professional 5-minute video that showcases your business, capabilities, location, and custom crate/pallet services. Contact us to get started:
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="flex items-center gap-2 text-xs">
+                    <FiMail className="w-3.5 h-3.5 text-primary" />
+                    <a href="mailto:bomar3620@gmail.com" className="text-primary font-medium hover:underline">bomar3620@gmail.com</a>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <FiPhone className="w-3.5 h-3.5 text-primary" />
+                    <span className="text-foreground font-medium">443-531-2612</span>
+                    <span className="text-muted-foreground">(text &quot;video wanted&quot;)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       <Card className="border-border/40 bg-card">
         <CardContent className="py-8 text-center">

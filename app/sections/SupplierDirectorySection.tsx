@@ -13,7 +13,7 @@ import { Slider } from '@/components/ui/slider'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Progress } from '@/components/ui/progress'
 import { callAIAgent } from '@/lib/aiAgent'
-import { FiSearch, FiGrid, FiList, FiMapPin, FiTruck, FiShield, FiDollarSign, FiPackage, FiFilter, FiStar } from 'react-icons/fi'
+import { FiSearch, FiGrid, FiList, FiMapPin, FiTruck, FiShield, FiDollarSign, FiPackage, FiFilter, FiStar, FiVideo } from 'react-icons/fi'
 import { Loader2 } from 'lucide-react'
 
 const DISCOVERY_AGENT_ID = '69a43a1a2b90bd3461e87627'
@@ -35,6 +35,9 @@ interface DiscoveredSupplier {
   min_order?: string
   price_range?: string
   relevance_explanation?: string
+  tier?: 'free' | 'paid'
+  custom_crates?: boolean
+  has_video?: boolean
 }
 
 interface DiscoveryResult {
@@ -47,12 +50,13 @@ interface DiscoveryResult {
 const sampleResult: DiscoveryResult = {
   search_interpretation: 'Searching for suppliers that offer heat-treated 48x40 GMA pallets with delivery capability within 50 miles of Portland, OR.',
   suppliers: [
-    { supplier_name: 'Pacific Pallet Co.', relevance_score: 96, location: 'Portland, OR', capabilities: 'Full-service pallet manufacturing with ISPM-15 certification. Custom sizing available.', pallet_types: '48x40 GMA, 42x42, Custom', heat_treated: true, delivery_available: true, min_order: '100 units', price_range: '$10-$15/unit', relevance_explanation: 'Perfect match: heat-treated 48x40 GMA supplier within your location, offers delivery.' },
-    { supplier_name: 'Oregon Wood Works', relevance_score: 88, location: 'Salem, OR', capabilities: 'Pallet remanufacturing specialist. High-volume capacity.', pallet_types: '48x40 GMA, 48x48', heat_treated: true, delivery_available: true, min_order: '200 units', price_range: '$8-$12/unit', relevance_explanation: 'Strong match: heat-treated, delivers, competitive pricing. Slightly farther location.' },
-    { supplier_name: 'WestCoast Pallets', relevance_score: 75, location: 'Vancouver, WA', capabilities: 'New and recycled pallets. Quick turnaround times.', pallet_types: '48x40 GMA, 42x42, 48x48', heat_treated: false, delivery_available: true, min_order: '50 units', price_range: '$9-$14/unit', relevance_explanation: 'Good location and type match. Does not offer heat treatment.' },
-    { supplier_name: 'Cascade Lumber Supply', relevance_score: 62, location: 'Eugene, OR', capabilities: 'Raw lumber and pallet manufacturing. Large-scale operations.', pallet_types: '48x40 GMA, Custom', heat_treated: true, delivery_available: false, min_order: '500 units', price_range: '$7-$10/unit', relevance_explanation: 'Heat-treated and good pricing, but no delivery and higher minimum order.' },
+    { supplier_name: 'Pacific Pallet Co.', relevance_score: 96, location: 'Portland, OR', capabilities: 'Full-service pallet manufacturing with ISPM-15 certification. Custom sizing and crate building available.', pallet_types: '48x40 GMA, 42x42, Custom', heat_treated: true, delivery_available: true, min_order: '100 units', price_range: '$10-$15/unit', relevance_explanation: 'Perfect match: heat-treated 48x40 GMA supplier within your location, offers delivery.', tier: 'paid', custom_crates: true, has_video: true },
+    { supplier_name: 'Bay Area Pallet Recyclers', relevance_score: 91, location: 'Oakland, CA', capabilities: 'Eco-focused pallet recycling and remanufacturing. Custom crate solutions for shipping and export.', pallet_types: '48x40 GMA, 42x42, 48x48', heat_treated: true, delivery_available: true, min_order: '75 units', price_range: '$8-$13/unit', relevance_explanation: 'Top Bay Area supplier: heat-treated, full range of sizes, custom crates, and delivery.', tier: 'paid', custom_crates: true, has_video: true },
+    { supplier_name: 'Heartland Wood Products', relevance_score: 82, location: 'Kansas City, MO', capabilities: 'Pallet remanufacturing specialist. High-volume capacity with custom crate services.', pallet_types: '48x40 GMA, 48x48', heat_treated: true, delivery_available: true, min_order: '200 units', price_range: '$8-$12/unit', relevance_explanation: 'Strong match: heat-treated, delivers, competitive pricing. Farther location but ships nationwide.', tier: 'paid', custom_crates: true, has_video: true },
+    { supplier_name: 'SouthEast Pallets', relevance_score: 75, location: 'Atlanta, GA', capabilities: 'New and recycled pallets. Quick turnaround times with regional focus.', pallet_types: '48x40 GMA, 42x42, 48x48', heat_treated: false, delivery_available: true, min_order: '50 units', price_range: '$9-$14/unit', relevance_explanation: 'Good type match and delivery. Does not offer heat treatment or custom crates.', tier: 'free', custom_crates: false, has_video: false },
+    { supplier_name: 'Golden State Lumber & Pallet', relevance_score: 68, location: 'Sacramento, CA', capabilities: 'Raw lumber and pallet manufacturing. Large-scale operations serving Central Valley.', pallet_types: '48x40 GMA, Custom', heat_treated: true, delivery_available: false, min_order: '500 units', price_range: '$7-$10/unit', relevance_explanation: 'Heat-treated with good pricing, but no delivery and higher minimum order.', tier: 'free', custom_crates: false, has_video: false },
   ],
-  total_results: 4,
+  total_results: 5,
   suggested_refinements: 'Try narrowing by grade (A, B, C) or specifying quantity needs for more precise pricing. You might also filter by lead time if urgency is a factor.',
 }
 
@@ -220,6 +224,16 @@ export default function SupplierDirectorySection({ showSample, activeAgentId, se
                         <Badge variant="outline" className="text-[10px] border-accent/30 text-accent">
                           <FiTruck className="w-2.5 h-2.5 mr-0.5" /> Delivers
                         </Badge>
+                      )}
+                      {supplier?.custom_crates && (
+                        <Badge variant="outline" className="text-[10px] border-accent/40 text-accent">Custom Crates</Badge>
+                      )}
+                      {supplier?.tier === 'paid' ? (
+                        <Badge className="text-[10px] bg-accent text-accent-foreground">
+                          <FiVideo className="w-2.5 h-2.5 mr-0.5" /> Pro
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="text-[10px]">Free</Badge>
                       )}
                     </div>
 
