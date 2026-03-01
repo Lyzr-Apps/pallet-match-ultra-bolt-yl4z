@@ -1,0 +1,26 @@
+{
+  "agent_name": "Supplier Discovery Agent",
+  "agent_id": "69a43a1a2b90bd3461e87627",
+  "agent_type": "json",
+  "accessor": "json",
+  "has_module_outputs": false,
+  "response_schema": {
+    "search_interpretation": "string",
+    "suppliers": [
+      {
+        "supplier_name": "string",
+        "relevance_score": "number",
+        "location": "string",
+        "capabilities": "string",
+        "pallet_types": "string",
+        "heat_treated": "boolean",
+        "delivery_available": "boolean",
+        "min_order": "string",
+        "price_range": "string",
+        "relevance_explanation": "string"
+      }
+    ],
+    "total_results": "number",
+    "suggested_refinements": "string"
+  }
+}

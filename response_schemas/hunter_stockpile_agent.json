@@ -1,0 +1,27 @@
+{
+  "agent_name": "Hunter Stockpile Agent",
+  "agent_id": "69a43a1a553457ac25becc8e",
+  "agent_type": "json",
+  "accessor": "json",
+  "has_module_outputs": false,
+  "response_schema": {
+    "stockpiles": [
+      {
+        "stockpile_id": "string",
+        "location": "string",
+        "distance": "string",
+        "pallet_type": "string",
+        "grade": "string",
+        "quantity": "number",
+        "accessibility": "string",
+        "priority_score": "number",
+        "estimated_value": "string",
+        "potential_buyers": "string",
+        "collection_notes": "string"
+      }
+    ],
+    "total_stockpiles": "number",
+    "suggested_route": "string",
+    "market_summary": "string"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "agent_name": "Supplier Discovery Agent",
+  "agent_id": "69a43a1a2b90bd3461e87627",
+  "description": "Processes natural language search queries against supplier directory, interprets filter intent (location, capability, delivery, lead time), and returns ranked supplier results with relevance reasoning",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "search_interpretation": "string",
+    "suppliers": [
+      {
+        "supplier_name": "string",
+        "relevance_score": "number",
+        "location": "string",
+        "capabilities": "string",
+        "pallet_types": "string",
+        "heat_treated": "boolean",
+        "delivery_available": "boolean",
+        "min_order": "string",
+        "price_range": "string",
+        "relevance_explanation": "string"
+      }
+    ],
+    "total_results": "number",
+    "suggested_refinements": "string"
+  },
+  "example_response": {
+    "search_interpretation": "sample string",
+    "suppliers": [
+      {
+        "supplier_name": "sample string",
+        "relevance_score": 0,
+        "location": "sample string",
+        "capabilities": "sample string",
+        "pallet_types": "sample string",
+        "heat_treated": false,
+        "delivery_available": false,
+        "min_order": "sample string",
+        "price_range": "sample string",
+        "relevance_explanation": "sample string"
+      }
+    ],
+    "total_results": 0,
+    "suggested_refinements": "sample string"
+  }
+}

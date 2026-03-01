@@ -1,0 +1,20 @@
+{
+  "nodes": [
+    {"id": "input_node", "type": "Input", "label": "User Request", "nodeCategory": "input"},
+    {"id": "rfq_matching_agent", "type": "Agent", "label": "RFQ Matching Agent", "nodeCategory": "agent"},
+    {"id": "supplier_discovery_agent", "type": "Agent", "label": "Supplier Discovery Agent", "nodeCategory": "agent"},
+    {"id": "hunter_stockpile_agent", "type": "Agent", "label": "Hunter Stockpile Agent", "nodeCategory": "agent"},
+    {"id": "marketplace_assistant_agent", "type": "Agent", "label": "Marketplace Assistant Agent", "nodeCategory": "agent"},
+    {"id": "output_node", "type": "Output", "label": "Agent Response", "nodeCategory": "end"}
+  ],
+  "edges": [
+    {"source": "input_node", "target": "rfq_matching_agent"},
+    {"source": "input_node", "target": "supplier_discovery_agent"},
+    {"source": "input_node", "target": "hunter_stockpile_agent"},
+    {"source": "input_node", "target": "marketplace_assistant_agent"},
+    {"source": "rfq_matching_agent", "target": "output_node"},
+    {"source": "supplier_discovery_agent", "target": "output_node"},
+    {"source": "hunter_stockpile_agent", "target": "output_node"},
+    {"source": "marketplace_assistant_agent", "target": "output_node"}
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "agent_name": "RFQ Matching Agent",
+  "agent_id": "69a43a1adfefaf7e451d3585",
+  "agent_type": "json",
+  "accessor": "json",
+  "has_module_outputs": false,
+  "response_schema": {
+    "matched_suppliers": [
+      {
+        "supplier_name": "string",
+        "match_score": "number",
+        "location": "string",
+        "pallet_types": "string",
+        "heat_treated": "boolean",
+        "delivery_available": "boolean",
+        "estimated_price": "string",
+        "lead_time": "string",
+        "match_explanation": "string"
+      }
+    ],
+    "total_matches": "number",
+    "rfq_summary": "string",
+    "recommendations": "string"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "agent_name": "Marketplace Assistant Agent",
+  "agent_id": "69a43a1b1ecf43e3e54a52be",
+  "agent_type": "json",
+  "accessor": "json",
+  "has_module_outputs": false,
+  "response_schema": {
+    "response_type": "string",
+    "content": "string",
+    "key_points": ["string"],
+    "suggested_actions": ["string"],
+    "context_notes": "string"
+  }
+}

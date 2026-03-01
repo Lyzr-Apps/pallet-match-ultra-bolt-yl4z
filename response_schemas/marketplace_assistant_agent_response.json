@@ -1,0 +1,30 @@
+{
+  "agent_name": "Marketplace Assistant Agent",
+  "agent_id": "69a43a1b1ecf43e3e54a52be",
+  "description": "Assists with drafting quote responses, summarizing message threads, generating pickup scheduling confirmations, and providing contextual help across all roles",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "response_type": "string",
+    "content": "string",
+    "key_points": [
+      "string"
+    ],
+    "suggested_actions": [
+      "string"
+    ],
+    "context_notes": "string"
+  },
+  "example_response": {
+    "response_type": "sample string",
+    "content": "sample string",
+    "key_points": [
+      "sample string"
+    ],
+    "suggested_actions": [
+      "sample string"
+    ],
+    "context_notes": "sample string"
+  }
+}

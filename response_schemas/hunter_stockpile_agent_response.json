@@ -1,0 +1,48 @@
+{
+  "agent_name": "Hunter Stockpile Agent",
+  "agent_id": "69a43a1a553457ac25becc8e",
+  "description": "Ranks nearby stockpile listings by proximity, pallet type match, quantity, and accessibility; suggests collection priority and potential buyers for collected pallets based on open RFQs",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "stockpiles": [
+      {
+        "stockpile_id": "string",
+        "location": "string",
+        "distance": "string",
+        "pallet_type": "string",
+        "grade": "string",
+        "quantity": "number",
+        "accessibility": "string",
+        "priority_score": "number",
+        "estimated_value": "string",
+        "potential_buyers": "string",
+        "collection_notes": "string"
+      }
+    ],
+    "total_stockpiles": "number",
+    "suggested_route": "string",
+    "market_summary": "string"
+  },
+  "example_response": {
+    "stockpiles": [
+      {
+        "stockpile_id": "sample string",
+        "location": "sample string",
+        "distance": "sample string",
+        "pallet_type": "sample string",
+        "grade": "sample string",
+        "quantity": 0,
+        "accessibility": "sample string",
+        "priority_score": 0,
+        "estimated_value": "sample string",
+        "potential_buyers": "sample string",
+        "collection_notes": "sample string"
+      }
+    ],
+    "total_stockpiles": 0,
+    "suggested_route": "sample string",
+    "market_summary": "sample string"
+  }
+}

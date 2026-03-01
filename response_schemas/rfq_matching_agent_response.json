@@ -1,0 +1,44 @@
+{
+  "agent_name": "RFQ Matching Agent",
+  "agent_id": "69a43a1adfefaf7e451d3585",
+  "description": "Analyzes new RFQs against supplier profiles using matching rules (location radius, pallet type, heat-treated, min order \u2264 qty needed) and returns a ranked list of matching suppliers with match-score explanations",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "matched_suppliers": [
+      {
+        "supplier_name": "string",
+        "match_score": "number",
+        "location": "string",
+        "pallet_types": "string",
+        "heat_treated": "boolean",
+        "delivery_available": "boolean",
+        "estimated_price": "string",
+        "lead_time": "string",
+        "match_explanation": "string"
+      }
+    ],
+    "total_matches": "number",
+    "rfq_summary": "string",
+    "recommendations": "string"
+  },
+  "example_response": {
+    "matched_suppliers": [
+      {
+        "supplier_name": "sample string",
+        "match_score": 0,
+        "location": "sample string",
+        "pallet_types": "sample string",
+        "heat_treated": false,
+        "delivery_available": false,
+        "estimated_price": "sample string",
+        "lead_time": "sample string",
+        "match_explanation": "sample string"
+      }
+    ],
+    "total_matches": 0,
+    "rfq_summary": "sample string",
+    "recommendations": "sample string"
+  }
+}
