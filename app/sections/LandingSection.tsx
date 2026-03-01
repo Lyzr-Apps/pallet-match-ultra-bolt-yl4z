@@ -64,6 +64,13 @@ export default function LandingSection({ setCurrentPage, showSample }: LandingSe
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center mb-16">
+        <div className="flex justify-center mb-6">
+          <img
+            src="https://asset.lyzr.app/eQpyJv6j"
+            alt="PalletMatch Logo"
+            className="w-28 h-28 md:w-36 md:h-36 rounded-full object-cover border-2 border-border/40 shadow-lg"
+          />
+        </div>
         <Badge variant="outline" className="mb-4 text-xs border-accent text-accent px-3 py-1">Beta Launch</Badge>
         <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground mb-4" style={{ lineHeight: '1.15' }}>
           Where Every Pallet<br />Finds Its Match

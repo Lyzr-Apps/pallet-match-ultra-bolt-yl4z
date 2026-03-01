@@ -133,8 +133,12 @@ export default function Page() {
             </div>
             <Separator className="mb-4" />
             <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-              <div className="flex items-center gap-1.5">
-                <FiPackage className="w-3.5 h-3.5" />
+              <div className="flex items-center gap-2">
+                <img
+                  src="https://asset.lyzr.app/eQpyJv6j"
+                  alt="PalletMatch Logo"
+                  className="w-6 h-6 rounded-full object-cover"
+                />
                 <span className="font-serif font-semibold">PalletMatch</span>
                 <Badge variant="outline" className="text-[9px] px-1 py-0 border-accent text-accent">BETA</Badge>
               </div>

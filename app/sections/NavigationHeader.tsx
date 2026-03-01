@@ -4,7 +4,7 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { FiPackage, FiUser } from 'react-icons/fi'
+import { FiUser } from 'react-icons/fi'
 
 export type PageView = 'landing' | 'buyer' | 'supplier' | 'hunter' | 'directory' | 'messaging' | 'admin'
 export type UserRole = 'buyer' | 'supplier' | 'hunter'
@@ -51,9 +51,11 @@ export default function NavigationHeader({ currentPage, setCurrentPage, userRole
             onClick={() => setCurrentPage('landing')}
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
-            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-              <FiPackage className="w-5 h-5 text-primary-foreground" />
-            </div>
+            <img
+              src="https://asset.lyzr.app/eQpyJv6j"
+              alt="PalletMatch Logo"
+              className="w-10 h-10 rounded-full object-cover border border-border/40 shadow-sm"
+            />
             <div>
               <span className="font-serif text-xl font-bold tracking-wide text-foreground">PalletMatch</span>
               <Badge variant="outline" className="ml-2 text-[10px] px-1.5 py-0 border-accent text-accent">BETA</Badge>
